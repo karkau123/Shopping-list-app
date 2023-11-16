@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categories.dart';
- 
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -27,57 +26,77 @@ class _NewItemState extends State<NewItem> {
                   label: Text('Name'),
                 ),
                 validator: (value) {
-                  return 'Demo';
+                  if (value == null ||
+                      value.isEmpty ||
+                      value.trim().length <= 1 ||
+                      value.trim().length > 50) {
+                    return 'Must be between 1 and 50 characters long';
+                  }
+                  return null;
                 },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                 Expanded(child: TextFormField(
-                   decoration:const  InputDecoration(
-                    label: Text('Quantity'),
-                   ),
-                   initialValue:'1',
-                  ),
-                  ),
-                  const SizedBox(width: 8,),
-                 Expanded (child:DropdownButtonFormField(
-                  hint:  Text('Select a category'),
-                  items: [
-                    for (final category in categories.entries)
-                     DropdownMenuItem(
-                      value:category.value ,
-                      child: Row(
-                        children:[
-                                   Container(
-                        width: 16,
-                        height: 16,
-                        color: category.value.color,
+                  Expanded(
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        label: Text('Quantity'),
                       ),
-                      const SizedBox(width: 6,),
-                      Text(category.value.title),
+                      initialValue: '1',
+                       validator: (value) {
+                  if (value == null ||
+                      value.isEmpty ||
+                      int.tryParse(value)==null ||
+                       int.tryParse(value)!<=0) {
+                    return 'Must be a valid positive number';
+                  }
+                  return null;
+                },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    child: DropdownButtonFormField(
+                        hint: Text('Select a category'),
+                        items: [
+                          for (final category in categories.entries)
+                            DropdownMenuItem(
+                              value: category.value,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 16,
+                                    height: 16,
+                                    color: category.value.color,
+                                  ),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  Text(category.value.title),
+                                ],
+                              ),
+                            ),
                         ],
-             
-                      ),
-                     ),
-
-                  ], onChanged: (value){}),),
+                        onChanged: (value) {}),
+                  ),
                 ],
               ),
-              const SizedBox(height: 12,),
-        Row (
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(onPressed:(){} , child:Text('Reset'),
-            ),
-            ElevatedButton(
-              onPressed: (){}
-              , child: Text('Add Item')
+              const SizedBox(
+                height: 12,
               ),
-          ],
-        ),
-
-
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {},
+                    child: Text('Reset'),
+                  ),
+                  ElevatedButton(onPressed: () {}, child: Text('Add Item')),
+                ],
+              ),
             ],
           ),
         ),
