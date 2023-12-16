@@ -36,19 +36,18 @@ class _NewItemState extends State<NewItem> {
 
       print(response.body);
       print(response.statusCode);
+      final Map <String ,dynamic> resData = json.decode(response.body);
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop();
-      // Navigator.of(context).pop(
-      //   GroceryItem(
-      //     id: DateTime.now().toString(),
-      //     name: _enteredname,
-      //     quantity: _enteredQuantity,
-      //     category: _selectedCategory,
-      //   ),
-      // ); // this pop function will send the data back to the screen from where we are comming
-      // in other words the screen just below in the screen stack.
+      Navigator.of(context).pop(GroceryItem(
+          id: resData['name'],
+          name: _enteredname, 
+          quantity: _enteredQuantity,
+           category: _selectedCategory));
+
+       
+    
     }
   }
 
