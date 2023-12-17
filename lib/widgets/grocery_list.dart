@@ -27,14 +27,21 @@ class _GroceryListState extends State<GroceryList> {
   void _loaditems() async {
     final url = Uri.https('flutter-prep1-390de-default-rtdb.firebaseio.com',
         'shopping-list.json');
-    final response = await http.get(url);
 
+     try{
+        final response = await http.get(url);
+        
     if (response.statusCode >= 400) {
       setState(() {
         _error = 'Failed to fetch the data , Please try again Later. ';
       });
     }
-
+    if (response.body == 'null') {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadeditems = [];
     for (final item in listData.entries) {
@@ -55,6 +62,15 @@ class _GroceryListState extends State<GroceryList> {
       _groceryItems = loadeditems;
       _isLoading = false;
     });
+     }   
+     catch(error){
+        setState(() {
+        _error = 'Something went wrong , Please try again Later. ';
+      });     
+     }
+   
+   // throw Exception('An Error Occured');
+
   }
 
   void _add_Item() async {
@@ -69,15 +85,21 @@ class _GroceryListState extends State<GroceryList> {
     });
   }
 
-  void _removeItem(GroceryItem item)   {
-     final url = Uri.https('flutter-prep1-390de-default-rtdb.firebaseio.com',
-          'shopping-list/${item.id}.json');
-       http.delete(url);
-
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
     setState(() {
       _groceryItems.remove(item);
-     
     });
+
+    final url = Uri.https('flutter-prep1-390de-default-rtdb.firebaseio.com',
+        'shopping-list/${item.id}.json');
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      // shoe error message
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+    }
   }
 
   @override
